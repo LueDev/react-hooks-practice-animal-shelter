@@ -29,9 +29,31 @@ function App() {
   }
 
   function onAdoptPet(petId) {
-    setPets(pets.map(pet => {
-      return pet.id === petId ? { ...pet, isAdopted: !pet.isAdopted } : pet;
-    }));
+    // Update the local state
+    const updatedPets = pets.map(pet => {
+      if (pet.id === petId) {
+        const updatedPet = { ...pet, isAdopted: !pet.isAdopted };
+  
+        // Send the update to the server
+        const configObj = {
+          method: "PATCH", // Use PATCH for partial updates
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ isAdopted: updatedPet.isAdopted }) // Send only the relevant data
+        };
+  
+        fetch(`http://localhost:3001/pets/${petId}`, configObj)
+          .then(response => response.json())
+          .then(data => console.log("Updated pet:", data))
+          .catch(error => console.error("Error:", error));
+  
+        return updatedPet;
+      } else {
+        return pet;
+      }
+    });
+  
+    // Update the state with the new pets array
+    setPets(updatedPets);
   }
 
   return (
