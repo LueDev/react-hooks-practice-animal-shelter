@@ -29,8 +29,6 @@ function App() {
   }
 
   function onAdoptPet(petId) {
-
-    configObj = {"Configuration-type" : "application/json"}
     setPets(pets.map(pet => {
       return pet.id === petId ? { ...pet, isAdopted: !pet.isAdopted } : pet;
     }));
